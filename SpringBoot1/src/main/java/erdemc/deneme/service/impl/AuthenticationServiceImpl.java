@@ -29,7 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		if(!USER_NAME.equals(userCode)) {
 			throw new UsernameNotFoundException("User with name '" + userCode + "' not found!");
 		}
-		final List<GrantedAuthority> userAuths = new ArrayList<GrantedAuthority>();
+		final List<GrantedAuthority> userAuths = new ArrayList<>();
 		userAuths.add(new SimpleGrantedAuthority("ROLE_USER"));
 		userAuths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		final String encoded = passwordEncoder.encode(HIDDEN);
