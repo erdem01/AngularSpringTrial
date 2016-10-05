@@ -7,6 +7,11 @@
 <body>
 
 	<a th:href="@{/logout}">Logout</a>
+	
+	<form method="POST" th:object="${spittle}" enctype="multipart/form-data" th:action="@{/upload}">
+		<label>Profile Picture</label>: <input type="file" name="profilePicture" accept="image/jpeg,image/png,image/gif" /><br/>
+		<input type="submit" value="Upload" />
+	</form>
 
 </body>
 </html>
