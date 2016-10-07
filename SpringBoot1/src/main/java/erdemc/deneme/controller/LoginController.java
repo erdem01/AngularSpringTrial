@@ -1,6 +1,7 @@
 package erdemc.deneme.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.Part;
 
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import erdemc.deneme.model.User;
 import erdemc.deneme.service.OrderService;
 import erdemc.deneme.service.UsersService;
 
@@ -39,6 +42,12 @@ public class LoginController {
 			e.printStackTrace();
 		}
 		return "redirect:/";
+	}
+	
+	@RequestMapping(value = "/users/json", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<User> findUsers() {
+		return usersService.findAll();
 	}
 	
 }
