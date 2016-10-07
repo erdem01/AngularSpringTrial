@@ -7,11 +7,13 @@ import javax.servlet.http.Part;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import erdemc.deneme.exception.UserNotFoundException;
 import erdemc.deneme.model.User;
 import erdemc.deneme.service.OrderService;
 import erdemc.deneme.service.UsersService;
@@ -48,6 +50,17 @@ public class LoginController {
 	@ResponseBody
 	public List<User> findUsers() {
 		return usersService.findAll();
+	}
+	
+	@RequestMapping(value="/users/json/{userCode}", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public User throwException(@PathVariable String userCode) throws UserNotFoundException {
+		User user = usersService.findUser(userCode);
+		if(user == null) {
+			throw new UserNotFoundException(userCode);
+		} else {
+			return user;
+		}
 	}
 	
 }
