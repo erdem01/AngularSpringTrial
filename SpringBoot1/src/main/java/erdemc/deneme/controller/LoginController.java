@@ -23,15 +23,19 @@ import erdemc.deneme.service.UsersService;
 @Controller
 public class LoginController {
 	
-	@Autowired
 	private RabbitTemplate rabbitTemplate;
 	
-	@Autowired
 	private UsersService usersService;
 	
-	@Autowired
 	private OrderService orderService;
-	
+
+	@Autowired
+	public LoginController(RabbitTemplate rabbitTemplate, UsersService usersService, OrderService orderService) {
+		this.rabbitTemplate = rabbitTemplate;
+		this.usersService = usersService;
+		this.orderService = orderService;
+	}
+
 	@RequestMapping(value="/", method = RequestMethod.GET)
 	public String displayLogin() {
 		System.out.println(usersService.findAll());
