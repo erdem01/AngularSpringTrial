@@ -22,7 +22,15 @@ public class SpringBoot1WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(authenticationService).passwordEncoder(passwordEncoder());
+		auth
+		.ldapAuthentication()
+		.userSearchFilter("uid={0}")
+		.groupSearchBase("ou=groups")
+		.groupSearchFilter("member={0}")
+		.contextSource()
+		.url("ldap://localhost:389/dc=erdemc,dc=deneme")
+		.managerDn("cn=admin,dc=erdemc,dc=deneme")
+		.managerPassword("invader84;");
 	}
 
 	@Override
