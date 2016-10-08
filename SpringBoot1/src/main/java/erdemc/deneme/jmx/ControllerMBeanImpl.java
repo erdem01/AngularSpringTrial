@@ -4,8 +4,8 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
-@ManagedResource(objectName="erdemc:name=ControllerMBean")
 @Component
+@ManagedResource(objectName="erdemc:name=ControllerMBean")
 public class ControllerMBeanImpl implements ControllerMBean {
 	
 	private volatile int callCount = 0;
