@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.Part;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import erdemc.deneme.amqp.listener.DenemeQueueListener;
 import erdemc.deneme.exception.UserNotFoundException;
 import erdemc.deneme.model.User;
 import erdemc.deneme.service.OrderService;
@@ -22,11 +24,14 @@ import erdemc.deneme.service.UsersService;
 public class LoginController {
 	
 	@Autowired
+	private RabbitTemplate rabbitTemplate;
+	
+	@Autowired
 	private UsersService usersService;
 	
 	@Autowired
 	private OrderService orderService;
-
+	
 	@RequestMapping(value="/", method = RequestMethod.GET)
 	public String displayLogin() {
 		System.out.println(usersService.findAll());
@@ -61,6 +66,12 @@ public class LoginController {
 		} else {
 			return user;
 		}
+	}
+	
+	@RequestMapping(value="/amqp/{message}", method = RequestMethod.GET)
+	public String sendAMQPMessage(@PathVariable String message) {
+		rabbitTemplate.convertAndSend(DenemeQueueListener.DENEME_QUEUE, message);
+		return "login";
 	}
 	
 }
