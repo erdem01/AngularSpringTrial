@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html ng-app="LoginModule">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="webjars/angularjs/1.5.8/angular.js"></script>
+<script type="text/javascript" src="webjars/angularjs/1.5.8/angular-route.min.js"></script>
+<script type="text/javascript" src="authentication/authentication.js"></script>
+<script type="text/javascript" src="loginController.js"></script>
+</head>
+<body ng-controller="LoginController as ctrl">
+
+	<form ng-submit="ctrl.login()" name="userForm">
+		<input type="text" class="name" ng-model="ctrl.username" />
+		<input type="text" class="surname" ng-model="ctrl.password" />
+		<input type="submit" value="Login" />
+	</form>
+	
+</body>
+</html>
