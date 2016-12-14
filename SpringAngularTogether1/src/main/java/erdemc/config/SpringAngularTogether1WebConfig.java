@@ -8,17 +8,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SpringAngularTogether1WebConfig extends WebSecurityConfigurerAdapter {
 
-	static String REALM="MY_TEST_REALM";
-	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth
@@ -34,13 +33,20 @@ public class SpringAngularTogether1WebConfig extends WebSecurityConfigurerAdapte
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable()
-        .authorizeRequests()
-        .antMatchers("/protected/**").authenticated()
-        .antMatchers("/**").permitAll()
-        .and().httpBasic().realmName(REALM).authenticationEntryPoint(authEntryPoint())
-        .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        ;
+		 http
+		 .csrf().disable()
+         .exceptionHandling()
+         .authenticationEntryPoint(authEntryPoint())
+         .and()
+         .authorizeRequests()
+         .antMatchers("/protected/**").authenticated()
+         .antMatchers("/**").permitAll()
+         .and()
+         .formLogin()
+         .successHandler(authenticationSuccessHandler())
+         .failureHandler(new SimpleUrlAuthenticationFailureHandler())
+         .and()
+         .logout();
 	}
 	
 	@Override
@@ -54,8 +60,13 @@ public class SpringAngularTogether1WebConfig extends WebSecurityConfigurerAdapte
 	}
 	
 	@Bean
-	public BasicAuthenticationEntryPoint authEntryPoint() {
-		return new CustomBasicAuthenticationEntryPoint();
+	public AuthenticationEntryPoint authEntryPoint() {
+		return new RestAuthenticationEntryPoint();
+	}
+	
+	@Bean
+	public AuthenticationSuccessHandler authenticationSuccessHandler() {
+		return new MySavedRequestAwareAuthenticationSuccessHandler();
 	}
 	
 }

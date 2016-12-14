@@ -5,10 +5,8 @@
 		self.username = '';
 		self.password = '';
 		self.login = function() {
-			$log.log('asd');
 			var loginPromise = AuthActionService.login(self.username, self.password);
 			loginPromise.then(function(response) {
-				$log.log('asd2');
 			}, function(errorMessage) {
 				$log.log(errorMessage);
 			});
