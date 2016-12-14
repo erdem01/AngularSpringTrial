@@ -14,6 +14,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
+import erdemc.service.CustomUserService;
+
 @Configuration
 @EnableWebSecurity
 public class SpringAngularTogether1WebConfig extends WebSecurityConfigurerAdapter {
@@ -21,14 +23,15 @@ public class SpringAngularTogether1WebConfig extends WebSecurityConfigurerAdapte
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth
-		.ldapAuthentication()
-		.userSearchFilter("uid={0}")
-		.groupSearchBase("ou=groups")
-		.groupSearchFilter("member={0}")
-		.contextSource()
-		.url("ldap://localhost:389/dc=erdemc,dc=deneme")
-		.managerDn("cn=admin,dc=erdemc,dc=deneme")
-		.managerPassword("invader84;");
+		.userDetailsService(new CustomUserService());
+//		.ldapAuthentication()
+//		.userSearchFilter("uid={0}")
+//		.groupSearchBase("ou=groups")
+//		.groupSearchFilter("member={0}")
+//		.contextSource()
+//		.url("ldap://localhost:389/dc=erdemc,dc=deneme")
+//		.managerDn("cn=admin,dc=erdemc,dc=deneme")
+//		.managerPassword("invader84;");
 	}
 
 	@Override
@@ -43,6 +46,8 @@ public class SpringAngularTogether1WebConfig extends WebSecurityConfigurerAdapte
          .antMatchers("/**").permitAll()
          .and()
          .formLogin()
+         .usernameParameter("username")
+         .passwordParameter("password")
          .successHandler(authenticationSuccessHandler())
          .failureHandler(new SimpleUrlAuthenticationFailureHandler())
          .and()

@@ -17,23 +17,6 @@
 			setUser: setUser
 		};
 	}]);
-	module.factory('AuthActionService', ['AuthHolderService', '$http', '$q', function(AuthHolderService, $http, $q) {
-		var login = function(username, password) {
-			var postData = 'username=' + username + '&password=' + password;
-
-			AuthHolderService.setUser(username, password);
-			var deferred = $q.defer();
-			var loginPromise = $http.post("/protected/login", postData).success(function(response) {
-				deferred.resolve(response);
-			}).error(function(data, status, headers, config) {
-				deferred.reject("Login failed with status: " + status);
-			});
-			return deferred.promise;
-		};
-		return {
-			login: login
-		};
-	}]);
 	module.factory('AuthInterceptor', ['AuthHolderService', function(AuthHolderService) {
 		return {
 			request: function(config) {
@@ -41,6 +24,12 @@
 				config.headers = config.headers || {};
 				var encodedStr = btoa(user.username + ':' + user.password);
 				config.headers.Authorization = 'Basic ' + encodedStr;
+				return config;
+				
+				if (AuthInfoService.hasAuthHeader()) {
+					config.headers['Authorization'] =
+					AuthInfoService.getAuthHeader();
+				}
 				return config;
 			},
 			responseError: function(config) {
@@ -54,10 +43,12 @@
 				// }
 				// Or return a rejection to continue the
 				// promise failure chain
+				if (responseError.status === 403) {
+					// Authorization issue, access forbidden
+					AuthInfoService.redirectToLogin();
+				}
+				return $q.reject(responseRejection);
 			}
 		};
-	}]);
-	module.config(['$httpProvider', function($httpProvider) {
-		$httpProvider.interceptors.push('AuthInterceptor');
 	}]);
 })();

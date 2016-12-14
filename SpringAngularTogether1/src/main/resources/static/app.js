@@ -1,10 +1,10 @@
 (function() {
-	var module = angular.module('AppModule', ['ngRoute']);
+	var module = angular.module('AppModule', ['ngRoute', 'AuthenticationModule', 'LoginModule']);
 	module.config(['$routeProvider', function($routeProvider) {
 		$routeProvider
         .when('/home', {
             controller: 'HomeController',
-            templateUrl: 'home.view.html',
+            templateUrl: 'protected/home.view.html',
             controllerAs: 'ctrl'
         })
 
@@ -15,5 +15,8 @@
         })
 
         .otherwise({ redirectTo: '/login' });
+	}]);
+	module.config(['$httpProvider', function($httpProvider) {
+		$httpProvider.interceptors.push('AuthInterceptor');
 	}]);
 })();
