@@ -3,9 +3,7 @@
 	module.config(['$routeProvider', function($routeProvider) {
 		$routeProvider
         .when('/home', {
-            controller: 'HomeController',
             templateUrl: 'protected/home.view.html',
-            controllerAs: 'ctrl'
         })
 
         .when('/login', {

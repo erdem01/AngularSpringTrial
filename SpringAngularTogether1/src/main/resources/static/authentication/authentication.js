@@ -27,8 +27,7 @@
 				return config;
 				
 				if (AuthInfoService.hasAuthHeader()) {
-					config.headers['Authorization'] =
-					AuthInfoService.getAuthHeader();
+					config.headers['Authorization'] = AuthInfoService.getAuthHeader();
 				}
 				return config;
 			},
