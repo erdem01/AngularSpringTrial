@@ -26,7 +26,7 @@
 	}]);
 	module.controller('LoginController', ['LoginService', '$log', function(LoginService, $log) {
 		self = this;
-		self.username = 'erdemc';
+		self.username = 'ecaglayan';
 		self.password = 'invader84;';
 		self.login = function() {
 			var loginPromise = LoginService.login(self.username, self.password);
