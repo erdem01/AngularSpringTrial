@@ -1,5 +1,5 @@
 (function() {
-	var module = angular.module('LoginModule', []);
+	var module = angular.module('LoginModule', ['AuthenticationModule']);
 	module.factory('LoginService', ['AuthHolderService', '$http', '$q', function(AuthHolderService, $http, $q) {
 		var login = function(username, password) {
 			var postData = 'username=' + username + '&password=' + password;
@@ -10,7 +10,7 @@
             };
 			var deferred = $q.defer();
 			var loginPromise = $http.post("/login", postData, config).success(function(response) {
-				AuthHolderService.setUser(username, password);
+				AuthHolderService.holdAuth(username, password);
 				deferred.resolve(response);
 			}).error(function(data, status, headers, config) {
 				deferred.reject("Login failed with status: " + status);

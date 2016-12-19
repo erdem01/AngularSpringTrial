@@ -1,53 +1,24 @@
 (function() {
-	var module = angular.module('AuthenticationModule', []);
-	module.factory('AuthHolderService', [function() {
-		var user = {
-			username: '',
-			password: ''
+	var module = angular.module('AuthenticationModule', ['ngCookies']);
+	module.constant('AuthKey','AuthKey');
+	module.factory('AuthHolderService', ['$cookies', 'AuthKey', function($cookies, AuthKey) {
+		var holdAuth = function(username, password) {
+			var authData = 'Basic ' + btoa(username + ':' + password);
+			// store user details in globals cookie that keeps user logged in for 1 week (or until they logout)
+            var cookieExp = new Date();
+            cookieExp.setDate(cookieExp.getDate() + 7);
+			$cookies.putObject(AuthKey, authData, { expires: cookieExp });
 		};
-		var getUser = function() {
-			return user;
+		var clearAuth = function() {
+			$cookies.remove(AuthKey);
 		};
-		var setUser = function(username, password) {
-			user.username = username;
-			user.password = password;
+		var gatherAuth = function() {
+			return $cookies.get(AuthKey) || '';
 		};
 		return {
-			getUser: getUser,
-			setUser: setUser
-		};
-	}]);
-	module.factory('AuthInterceptor', ['AuthHolderService', function(AuthHolderService) {
-		return {
-			request: function(config) {
-				var user = AuthHolderService.getUser();
-				config.headers = config.headers || {};
-				var encodedStr = btoa(user.username + ':' + user.password);
-				config.headers.Authorization = 'Basic ' + encodedStr;
-				return config;
-				
-				if (AuthInfoService.hasAuthHeader()) {
-					config.headers['Authorization'] = AuthInfoService.getAuthHeader();
-				}
-				return config;
-			},
-			responseError: function(config) {
-				// Continue to ensure that the next promise chain
-				// sees an error
-				// Can check auth status code here if need to
-				// if (rejection.status === 403) {
-				// Show a login dialog
-				// return a value to tell controllers it has
-				// been handled
-				// }
-				// Or return a rejection to continue the
-				// promise failure chain
-				if (responseError.status === 403) {
-					// Authorization issue, access forbidden
-					AuthInfoService.redirectToLogin();
-				}
-				return $q.reject(responseRejection);
-			}
+			holdAuth: holdAuth,
+			clearAuth: clearAuth,
+			gatherAuth: gatherAuth
 		};
 	}]);
 })();
