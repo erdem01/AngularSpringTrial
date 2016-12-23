@@ -30,7 +30,7 @@
                 }
             };
 			var deferred = $q.defer();
-			var loginPromise = $http.post("/login", postData, config).success(function(response) {
+			var loginPromise = $http.post("../SpringAngularTogether1/login", postData, config).success(function(response) {
 				AuthenticationHolderService.holdAuth(username, password);
 				deferred.resolve(response);
 			}).error(function(data, status, headers, config) {

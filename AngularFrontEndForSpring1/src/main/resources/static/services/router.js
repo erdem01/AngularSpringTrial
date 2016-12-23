@@ -31,7 +31,7 @@
             controllerAs: 'ctrl'
         })
 
-        .otherwise({ redirectTo: loginPath });
+        .otherwise({ redirectTo: helloPath });
 	}]);
 	module.config(['$httpProvider', function($httpProvider) {
 		$httpProvider.interceptors.push('AuthInterceptor');
