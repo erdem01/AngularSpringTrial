@@ -1,5 +1,5 @@
 (function() {
-	var module = angular.module('RouterModule', ['ngRoute']);
+	var module = angular.module('RouterModule', ['ngRoute', 'AuthenticationModule']);
 	module.constant('loginPath','/login');
 	module.constant('helloPath','/hello');
 	module.factory('RouteService', ['$location', 'loginPath', 'helloPath', function($location, loginPath, helloPath) {
@@ -35,5 +35,13 @@
 	}]);
 	module.config(['$httpProvider', function($httpProvider) {
 		$httpProvider.interceptors.push('AuthInterceptor');
+	}]);
+	module.run(['$rootScope', '$location', 'AuthenticationHolderService', 'RouteService', function($rootScope, $location, AuthenticationHolderService, RouteService) {
+		$rootScope.$on("$routeChangeStart",function(event, next, current){
+	        if(!AuthenticationHolderService.isLoggedIn()){
+	        	RouteService.redirectToLogin();
+	        	return;
+	        }
+	    });
 	}]);
 })();

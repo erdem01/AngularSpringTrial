@@ -1,5 +1,5 @@
 (function() {
-	var module = angular.module('AuthenticationModule', ['RouterModule', 'ngCookies']);
+	var module = angular.module('AuthenticationModule', ['ngCookies']);
 	module.factory('AuthenticationHolderService', ['$cookies', function($cookies) {
 		var authKey = 'authKey';
 		var holdAuth = function(username, password) {
@@ -15,10 +15,18 @@
 		var gatherAuth = function() {
 			return $cookies.get(authKey) || '';
 		};
+		var isLoggedIn = function() {
+			if(gatherAuth()) {
+				return true;
+			} else {
+				return false;
+			}
+		};
 		return {
 			holdAuth: holdAuth
 			, clearAuth: clearAuth
 			, gatherAuth: gatherAuth
+			, isLoggedIn: isLoggedIn
 		};
 	}]);
 	module.factory('AuthenticationService', ['$http', '$q', 'AuthenticationHolderService', function($http, $q, AuthenticationHolderService) {
@@ -46,7 +54,7 @@
 			logout: logout
 		};
 	}]);
-	module.factory('AuthInterceptor', ['$q', 'AuthenticationHolderService', 'RouteService', '$log', function($q, AuthenticationHolderService, RouteService, $log) {
+	module.factory('AuthInterceptor', ['$q', 'AuthenticationHolderService', '$log', function($q, AuthenticationHolderService, $log) {
 		return {
 			request: function(config) {
 				var authData = AuthenticationHolderService.gatherAuth();
@@ -71,11 +79,11 @@
 			responseError: function(rejection) {
 				$log.log('rejection.status ' + rejection.status);
 				if (rejection.status === 401) {
-					RouteService.redirectToLogin();
-					return $q.resolve(rejection);
+					AuthenticationHolderService.clearAuth();
 				}
 				return $q.reject(rejection);
 			}
 		};
 	}]);
+	
 })();
